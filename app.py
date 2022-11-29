@@ -42,13 +42,24 @@ df["costacum"] = df.apply(lambda x: round_2dec(x["costacum"]), axis=1)
 
 # porcentaje % de avance de costo acumulado actual
 df["poracum"] = df["costacum"] / df["ppto"]
-# truncar a 2 decimales
+# truncar a mostrar 2 decimales
 df["poracum"] = df["poracum"].apply(lambda x: float("{:.2f}".format(x)))
 
 # Metrado saldo por valorizar
-#df["msald"] = df[]
+df["msald"] = df["METRADO CONTRACTUAL"] - df["macum"]
+# Aplicar el redondeo a la columna de metrado faltante (saldo por valorizar) no es necesario
+#df["msald"] = df.apply(lambda x: round_2dec(x["msald"]), axis=1)
 
+# Costo faltante por valorizar (saldo)
+df["costsald"] = df["ppto"] - df["costacum"]
+#df["costsald"] = df["msald"] * df["P.U. OFERTA S/."]
+# Aplicar el redondeo a la columna de saldo por valorizar
+df["costsald"] = df.apply(lambda x: round_2dec(x["costsald"]), axis=1)
 
+# porcentaje % de faltante de avance de proyecto
+df["porsald"] = df["costsald"] / df["ppto"]
+# truncar a mostrar 2 decimales
+df["porsald"] = df["porsald"].apply(lambda x: float("{:.2f}".format(x)))
 
 
 # Sumas
@@ -57,13 +68,17 @@ coant = df["costant"].sum()
 coval = df["costval"].sum()
 coacum = round_2dec(df["costacum"].sum())
 pracum = '{:.2%}'.format(coacum / presupuesto) #formatea a % con 2 puntos decimales
+cosald = round_2dec(df["costsald"].sum())
+prsald = '{:.2%}'.format(cosald / presupuesto) #formatea a % con 2 puntos decimales
+
+
 # Diccionario
 #header_dict = {"ppto" : "PRESUPUESTO_CONTRACTUAL"}
 sum_column = df.sum(axis=0)
 
 print(df)
 print (sum_column)
-print (presupuesto, coant, coval, coacum, pracum)
+print (presupuesto, coant, coval, coacum, pracum, cosald, prsald)
 
 df.to_csv('out/out.csv', encoding='utf-8-sig')
 df.to_excel('out/out.xlsx', encoding='utf-8-sig')
