@@ -12,7 +12,7 @@ def round_2dec(n):
     return math.floor(n*multiplier + 0.5) / multiplier
 
 # Importo datos, salto las primeras filas de membrete
-df = pd.read_csv("./data/data.csv", skiprows=14, sep=";", encoding='utf-8-sig')
+df = pd.read_csv("./data/data.csv", skiprows=14, sep=";", encoding='utf-8-sig', index_col=False)
 df = df.fillna(0)
 
 # Crear columnas
@@ -73,14 +73,30 @@ prsald = '{:.2%}'.format(cosald / presupuesto) #formatea a % con 2 puntos decima
 
 
 # Diccionario
+# Cambiamos el nombre de las columnas al dataframe original
+df.rename(columns = {"ppto": "PRESUPUESTO OFERTA S/."}, inplace = True)
+
+
+
 #header_dict = {"ppto" : "PRESUPUESTO_CONTRACTUAL"}
+
+
+
+
+
 sum_column = df.sum(axis=0)
 
 print(df)
 print (sum_column)
 print (presupuesto, coant, coval, coacum, pracum, cosald, prsald)
 
-df.to_csv('out/out.csv', encoding='utf-8-sig')
-df.to_excel('out/out.xlsx', encoding='utf-8-sig')
+
+#Manipulacion del excel
+#borrar columnas
+#df.drop(columns = 'label_first_column', axis = 1, inplace= True)
+#df.drop(columns = df.columns[0], axis = 1, inplace= True)
+
+df.to_csv('out/out.csv', encoding='utf-8-sig', index=False)
+df.to_excel('out/out.xlsx', encoding='utf-8-sig', index=False)
 
 # df = [['col4', 'pancho', 'dfgdfg']]
