@@ -19,29 +19,17 @@ df = df.fillna(0)
 # Creo columna de PRESUPUESTO OFERTA  
 df["ppto"] = df["METRADO CONTRACTUAL"] * df["P.U. OFERTA S/."]
 # Aplicar el redondeo a la columna de presupuesto
-
-
-#def apply_cosas(x, col_name: str):
-#    return round_2dec(x[col_name])
-
-def apply_roundppto(x):
-    return round_2dec(x["ppto"])
-
-df["ppto"] = df.apply(apply_roundppto,axis = 1)
+df["ppto"] = df.apply(lambda x: round_2dec(x["ppto"]), axis=1)
 
 # Costo acumulado anterior
 df["costant"] = df["ACUMULADO ANTERIOR"] * df["P.U. OFERTA S/."]
 # Aplicar el redondeo a la columna de costo acumulado anterior
-def apply_roundcant(x):
-    return round_2dec(x["costant"])
-df["costant"] = df.apply(apply_roundcant,axis = 1)
+df["costant"] = df.apply(lambda x: round_2dec(x["costant"]), axis=1)
 
 # Valorizacion actual
 df["costval"] = df["AVANCE ACTUAL"] * df["P.U. OFERTA S/."]
 # Aplicar el redondeo a la columna de costo actual de valorizacion
-def apply_roundcval(x):
-    return round_2dec(x["costval"])
-df["costval"] = df.apply(apply_roundcval,axis = 1)
+df["costval"] = df.apply(lambda x: round_2dec(x["costval"]), axis=1)
 
 # Metrado acumulado actual
 df["macum"] = df["ACUMULADO ANTERIOR"] + df["AVANCE ACTUAL"]
@@ -50,9 +38,7 @@ df["macum"] = df["ACUMULADO ANTERIOR"] + df["AVANCE ACTUAL"]
 # Costo acumulado actual 
 df["costacum"] = df["macum"] * df["P.U. OFERTA S/."]
 # Aplicar el redondeo a la columna de costo acumulado
-def apply_roundcacum(x):
-    return round_2dec(x["costacum"])
-df["costacum"] = df.apply(apply_roundcacum,axis = 1)
+df["costacum"] = df.apply(lambda x: round_2dec(x["costacum"]), axis=1)
 
 # porcentaje % de avance de costo acumulado actual
 df["poracum"] = df["costacum"] / df["ppto"]
