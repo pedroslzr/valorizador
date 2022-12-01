@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 import math
-import openpyxl
+import xlsxwriter
 
 # Herramienta de redondeo a 2 decimales
 def round_2dec(n):
@@ -16,7 +16,8 @@ df = pd.read_csv("./data/data.csv", skiprows=14, sep=";", encoding='utf-8-sig', 
 df = df.fillna(0)
 
 # Crear columnas
-# Creo columna de PRESUPUESTO OFERTA  
+
+# Creo columna de presupuesto oferta
 df["ppto"] = df["METRADO CONTRACTUAL"] * df["P.U. OFERTA S/."]
 # Aplicar el redondeo a la columna de presupuesto
 df["ppto"] = df.apply(lambda x: round_2dec(x["ppto"]), axis=1)
@@ -61,6 +62,9 @@ df["porsald"] = df["costsald"] / df["ppto"]
 # truncar a mostrar 2 decimales
 df["porsald"] = df["porsald"].apply(lambda x: float("{:.2f}".format(x)))
 
+# Reordenar columnas, definir orden y aplicar
+orden = ['ITEM.','DESCRIPCION DE PARTIDA','UND.','METRADO CONTRACTUAL','P.U. OFERTA S/.','ppto','ACUMULADO ANTERIOR','costant','AVANCE ACTUAL','costval','macum','costacum','poracum','msald','costsald','porsald']
+df = df[orden]
 
 # Sumas
 presupuesto = df["ppto"].sum()
@@ -92,11 +96,27 @@ print (presupuesto, coant, coval, coacum, pracum, cosald, prsald)
 
 
 #Manipulacion del excel
+
 #borrar columnas
 #df.drop(columns = 'label_first_column', axis = 1, inplace= True)
 #df.drop(columns = df.columns[0], axis = 1, inplace= True)
+# df = [['col4', 'pancho', 'dfgdfg']]
 
 df.to_csv('out/out.csv', encoding='utf-8-sig', index=False)
-df.to_excel('out/out.xlsx', encoding='utf-8-sig', index=False)
+df.to_excel('out/out.xlsx', encoding='utf-8-sig', index=False, sheet_name="valorizacion")
 
-# df = [['col4', 'pancho', 'dfgdfg']]
+# Acceder al excel
+writer = pd.ExcelWriter("out/valorizacion.xlsx", engine="xlsxwriter")
+df.to_excel(writer, index=False, sheet_name="valorizacion")
+#
+workbook = writer.book
+worksheet1 = writer.sheets["valorizacion"]
+#
+worksheet1.set_zoom(90)
+
+#header1 = '&CHere is some centered text.'
+#worksheet1.set_header(header1)
+
+
+
+writer.save()
