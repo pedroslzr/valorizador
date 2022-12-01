@@ -103,20 +103,33 @@ print (presupuesto, coant, coval, coacum, pracum, cosald, prsald)
 # df = [['col4', 'pancho', 'dfgdfg']]
 
 df.to_csv('out/out.csv', encoding='utf-8-sig', index=False)
-df.to_excel('out/out.xlsx', encoding='utf-8-sig', index=False, sheet_name="valorizacion")
+#df.to_excel('out/out.xlsx', encoding='utf-8-sig', index=False, sheet_name="valorizacion")
 
 # Acceder al excel
-writer = pd.ExcelWriter("out/valorizacion.xlsx", engine="xlsxwriter")
-df.to_excel(writer, index=False, sheet_name="valorizacion")
+writer = pd.ExcelWriter("out/valorizacion.xlsx", engine='xlsxwriter')
+df.to_excel(writer, header=False, startrow=3, startcol=3, index=False, sheet_name="valorizacion")
 #
 workbook = writer.book
-worksheet1 = writer.sheets["valorizacion"]
+worksheet = writer.sheets["valorizacion"]
 #
-worksheet1.set_zoom(90)
+worksheet.set_zoom(90)
 
-#header1 = '&CHere is some centered text.'
-#worksheet1.set_header(header1)
+#Formato de cabecera
+header_format = workbook.add_format({
+    "valign": "vcenter",
+    "aling":"center",
+    "bg color":"#951F06",
+    "bold":True,
+    "font_color":"#FFFFFF"})
 
+merge_format = workbook.add_format({
+    'bold': 1,
+    'border': 1,
+    'align': 'center',
+    'valign': 'vcenter',
+    'fg_color': 'yellow'})
 
-
+title = "Valorizacion mensual"
+worksheet.merge_range('A1:AS1', title, merge_format)
+workbook.close()
 writer.save()
