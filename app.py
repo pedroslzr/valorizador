@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 import math
-import xlsxwriter
+from xlsxwriter.utility import xl_rowcol_to_cell
 
 # Herramienta de redondeo a 2 decimales
 def round_2dec(n):
@@ -103,11 +103,11 @@ print (presupuesto, coant, coval, coacum, pracum, cosald, prsald)
 # df = [['col4', 'pancho', 'dfgdfg']]
 
 df.to_csv('out/out.csv', encoding='utf-8-sig', index=False)
-#df.to_excel('out/out.xlsx', encoding='utf-8-sig', index=False, sheet_name="valorizacion")
+df.to_excel('out/out.xlsx', encoding='utf-8-sig', index=False, sheet_name="valorizacion")
 
 # Acceder al excel
 writer = pd.ExcelWriter("out/valorizacion.xlsx", engine='xlsxwriter')
-df.to_excel(writer, header=False, startrow=3, startcol=3, index=False, sheet_name="valorizacion")
+df.to_excel(writer, header=True, startrow=3, startcol=3, index=False, sheet_name="valorizacion")
 #
 workbook = writer.book
 worksheet = writer.sheets["valorizacion"]
@@ -117,8 +117,8 @@ worksheet.set_zoom(90)
 #Formato de cabecera
 header_format = workbook.add_format({
     "valign": "vcenter",
-    "aling":"center",
-    "bg color":"#951F06",
+    "align":"center",
+    "bg_color":"#951F06",
     "bold":True,
     "font_color":"#FFFFFF"})
 
@@ -131,5 +131,5 @@ merge_format = workbook.add_format({
 
 title = "Valorizacion mensual"
 worksheet.merge_range('A1:AS1', title, merge_format)
-workbook.close()
+
 writer.save()
